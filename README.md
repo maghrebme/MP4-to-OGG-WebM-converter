@@ -139,7 +139,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ### TODO
 
-- Add a progress bar for better visual feedback during conversion.
+- Enhance performance and speed.
 - Support more input/output formats.
 
 ---
