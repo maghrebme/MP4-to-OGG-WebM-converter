@@ -71,10 +71,7 @@ pip install PyQt5
 ## Screenshots
 
 ### Main Interface
-![Main Interface](path/to/screenshot-main-interface.png)
-
-### Conversion in Progress
-![Conversion Progress](path/to/screenshot-progress.png)
+<img width="409" alt="main_ui" src="https://github.com/user-attachments/assets/e51e9bf7-3aa6-4a46-b2dc-c31f0b96bf7b">
 
 ---
 
