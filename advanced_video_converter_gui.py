@@ -2,7 +2,7 @@ import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QMessageBox, QComboBox, QLineEdit, QFormLayout
+    QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QMessageBox, QComboBox, QLineEdit, QFormLayout, QProgressBar
 )
 
 class VideoConverterApp(QWidget):
@@ -10,7 +10,7 @@ class VideoConverterApp(QWidget):
         super().__init__()
 
         self.setWindowTitle("MP4 to OGG & WebM Converter")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 400, 350)
 
         # Main Layout
         self.layout = QVBoxLayout()
@@ -41,6 +41,11 @@ class VideoConverterApp(QWidget):
         self.form_layout.addRow("FFmpeg Threads:", self.threads_input)
 
         self.layout.addLayout(self.form_layout)
+
+        # Progress Bar
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)
+        self.layout.addWidget(self.progress_bar)
 
         # Convert Button
         self.convert_button = QPushButton("Convert Videos")
@@ -89,6 +94,10 @@ class VideoConverterApp(QWidget):
             QMessageBox.information(self, "No Videos Found", "No MP4 files found in the selected folder.")
             return
 
+        # Reset Progress Bar
+        self.progress_bar.setValue(0)
+        self.progress_bar.setMaximum(len(files_to_convert))
+
         # Use ThreadPoolExecutor for parallel processing
         max_workers = min(threads, len(files_to_convert))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -102,6 +111,7 @@ class VideoConverterApp(QWidget):
                 try:
                     future.result()
                     completed_count += 1
+                    self.progress_bar.setValue(completed_count)  # Update progress bar
                 except Exception as e:
                     print(f"Error converting {futures[future]}: {e}")
 
