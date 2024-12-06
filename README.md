@@ -1,21 +1,29 @@
 
 # MP4 to OGG & WebM Video Converter
 
-A simple and intuitive **PyQt5-based GUI desktop application** that was created using [**ChatGPT 4o**](https://chat.openai.com) to convert MP4 videos to **OGG** and **WebM** formats using **FFmpeg**. The app allows users to control output quality, including video resolution, audio bitrate, and thread count.
+A simple **PyQt5-based GUI desktop application** that was created using [**ChatGPT 4o**](https://chat.openai.com) to convert MP4 videos to **OGG** and **WebM** formats using **FFmpeg**. The app allows users to control output quality, including video resolution, audio bitrate, and thread count.
 
 ---
 
+
 ## Features
 
-- **Convert MP4 to OGG and WebM:**
-  - Video Codec: `libtheora` (OGG), `libvpx-vp9` (WebM)
-  - Audio Codec: `libvorbis` (OGG), `libopus` (WebM)
-- **Customizable Output Settings:**
-  - **Video Resolution**: Choose from `480p`, `720p`, `1080p`, or retain the original resolution.
+- **Batch Conversion**:
+  - Convert multiple `.mp4` videos simultaneously.
+  - Outputs both `.ogg` (using `libtheora` and `libvorbis`) and `.webm` (using `libvpx-vp9` and `libopus`).
+  
+- **Customizable Output Settings**:
+  - **Video Resolution**: Choose between `480p`, `720p`, `1080p`, or retain the original resolution.
   - **Audio Bitrate**: Adjust audio quality (`64k`, `128k`, `192k`) or retain the original bitrate.
-  - **Threads**: Configure the number of FFmpeg threads for faster parallel processing.
-- **Parallel Conversion**: Converts multiple videos simultaneously using Python’s `concurrent.futures` for efficiency.
-- **User-Friendly GUI**: Select input folder, adjust settings, and start conversion with just a few clicks.
+  - **OGG Quality**: Control the OGG video quality using a scale from `1` (highest quality) to `10` (lowest quality).
+  - **WebM CRF**: Adjust WebM quality using the CRF parameter (`0` = lossless, higher values = lower quality).
+  - **Threads**: Specify the number of threads for faster FFmpeg processing.
+
+- **Progress Bar**:
+  - Provides real-time progress updates during batch conversion.
+
+- **Parallel Processing**:
+  - Converts multiple files concurrently for optimal efficiency.
 
 ---
 
@@ -23,7 +31,8 @@ A simple and intuitive **PyQt5-based GUI desktop application** that was created 
 
 ### Prerequisites
 
-1. **FFmpeg**: Ensure `ffmpeg` is installed.
+1. **FFmpeg**:
+   Ensure `ffmpeg` is installed.
    - On macOS (via Homebrew):
      ```bash
      brew install ffmpeg
@@ -34,7 +43,8 @@ A simple and intuitive **PyQt5-based GUI desktop application** that was created 
      ```
    - On Windows: [Download FFmpeg](https://ffmpeg.org/download.html)
 
-2. **Python 3.7+**: Ensure Python is installed. Download it from [python.org](https://www.python.org/).
+2. **Python 3.7+**:
+   Download and install Python from [python.org](https://www.python.org/).
 
 ### Install Required Python Libraries
 
@@ -49,21 +59,23 @@ pip install PyQt5
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/mp4-to-ogg-webm-converter.git
-   cd mp4-to-ogg-webm-converter
+   git clone https://github.com/your-username/multiformat-video-converter.git
+   cd multiformat-video-converter
    ```
 
 2. Run the application:
    ```bash
-   python advanced_video_converter_gui.py
+   python multiple_videos_convert.py
    ```
 
 3. Use the GUI to:
    - **Select Input Folder**: Choose a folder containing `.mp4` videos.
    - **Adjust Settings**:
-     - Video resolution: Select desired output resolution (`480p`, `720p`, `1080p`, or `Original`).
-     - Audio bitrate: Choose bitrate (`64k`, `128k`, `192k`, or `Original`).
-     - FFmpeg threads: Set the number of threads for parallel processing.
+     - Video resolution: Choose desired resolution (`480p`, `720p`, `1080p`, or `Original`).
+     - Audio bitrate: Set desired bitrate (`64k`, `128k`, `192k`, or `Original`).
+     - OGG quality: Input a value between `1` (best quality) and `10` (lowest quality).
+     - WebM CRF: Input a value between `0` (lossless) and `63` (lowest quality).
+     - Threads: Specify the number of FFmpeg threads for parallel processing.
    - **Start Conversion**: Converted `.ogg` and `.webm` files will be saved in the `converted` folder inside the input folder.
 
 ---
@@ -71,7 +83,10 @@ pip install PyQt5
 ## Screenshots
 
 ### Main Interface
-<img width="409" alt="main_ui" src="https://github.com/user-attachments/assets/e51e9bf7-3aa6-4a46-b2dc-c31f0b96bf7b">
+![Main Interface](path/to/screenshot-main-interface.png)
+
+### Conversion in Progress
+![Conversion Progress](path/to/screenshot-progress.png)
 
 ---
 
@@ -81,27 +96,23 @@ pip install PyQt5
 
 - **GUI (PyQt5)**:
   - Dropdowns for video resolution and audio bitrate.
-  - Input field for thread count.
-  - Button to select the input folder and start conversion.
+  - Input fields for OGG quality, WebM CRF, and threading.
+  - A button to select the input folder and start conversion.
+
 - **Backend (FFmpeg)**:
-  - Video and audio conversion powered by FFmpeg with the following codecs:
-    - Video: `libtheora` (OGG), `libvpx-vp9` (WebM)
-    - Audio: `libvorbis` (OGG), `libopus` (WebM)
-- **Parallel Processing**:
-  - Converts multiple videos concurrently using Python's `ThreadPoolExecutor`.
-
-### File Structure
-
-- `advanced_video_converter_gui.py`: Main application script.
-- `README.md`: Project documentation.
+  - Uses FFmpeg for video and audio conversion:
+    - **OGG**: Video codec `libtheora`, audio codec `libvorbis`.
+    - **WebM**: Video codec `libvpx-vp9`, audio codec `libopus`.
+  - Parallel processing using Python’s `ThreadPoolExecutor`.
 
 ---
 
 ## Customization
 
 Feel free to modify the app to suit your needs:
-- **Additional Formats**: Extend the FFmpeg commands to support other video/audio formats.
-- **Error Handling**: Add more robust error handling for edge cases.
+- Add more formats (e.g., AVI, MKV).
+- Customize FFmpeg parameters to enhance performance or compatibility.
+- Extend error handling for edge cases.
 
 ---
 
@@ -139,7 +150,11 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ### TODO
 
-- Enhance performance and speed.
-- Support more input/output formats.
+- ✅ Add a progress bar for better visual feedback during conversion.
+- ➡️ Implement drag-and-drop functionality for file selection.
+- ➡️ Support additional output formats (e.g., AVI, MKV).
+- ➡️ Add pause/resume functionality for conversions.
+- ➡️ Display estimated time remaining for conversions.
+- ➡️ Enhance performance and speed.
 
 ---
