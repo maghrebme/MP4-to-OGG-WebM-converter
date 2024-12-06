@@ -83,10 +83,8 @@ pip install PyQt5
 ## Screenshots
 
 ### Main Interface
-![Main Interface](path/to/screenshot-main-interface.png)
+<img width="509" alt="multiple_videos_convert" src="https://github.com/user-attachments/assets/8896dbf1-140d-48ba-b206-e98dd3229d9d">
 
-### Conversion in Progress
-![Conversion Progress](path/to/screenshot-progress.png)
 
 ---
 
