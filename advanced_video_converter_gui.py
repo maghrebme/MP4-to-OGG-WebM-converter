@@ -35,6 +35,16 @@ class VideoConverterApp(QWidget):
         self.audio_bitrate_dropdown.addItems(["64k", "128k", "192k", "Original"])
         self.form_layout.addRow("Audio Bitrate:", self.audio_bitrate_dropdown)
 
+        # OGG Video Quality
+        self.ogg_quality_input = QLineEdit()
+        self.ogg_quality_input.setText("5")  # Default OGG quality
+        self.form_layout.addRow("OGG Video Quality (1-10):", self.ogg_quality_input)
+
+        # WebM Video Quality
+        self.webm_quality_input = QLineEdit()
+        self.webm_quality_input.setText("30")  # Default WebM quality
+        self.form_layout.addRow("WebM CRF (Lower = Better):", self.webm_quality_input)
+
         # Threads
         self.threads_input = QLineEdit()
         self.threads_input.setText("4")  # Default number of threads
@@ -82,6 +92,8 @@ class VideoConverterApp(QWidget):
         resolution = self.get_resolution()
         audio_bitrate = self.get_audio_bitrate()
         threads = self.get_threads()
+        ogg_quality = self.get_ogg_quality()
+        webm_quality = self.get_webm_quality()
 
         supported_extensions = {".mp4"}
         files_to_convert = [
@@ -102,7 +114,7 @@ class VideoConverterApp(QWidget):
         max_workers = min(threads, len(files_to_convert))
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(self.convert_video, file_path, resolution, audio_bitrate, threads): file_path
+                executor.submit(self.convert_video, file_path, resolution, audio_bitrate, ogg_quality, webm_quality, threads): file_path
                 for file_path in files_to_convert
             }
 
@@ -133,6 +145,20 @@ class VideoConverterApp(QWidget):
         bitrate = self.audio_bitrate_dropdown.currentText()
         return None if bitrate == "Original" else bitrate
 
+    def get_ogg_quality(self):
+        """Get OGG video quality (1-10)."""
+        try:
+            return max(1, min(10, int(self.ogg_quality_input.text())))
+        except ValueError:
+            return 5  # Default OGG quality
+
+    def get_webm_quality(self):
+        """Get WebM CRF value."""
+        try:
+            return max(0, int(self.webm_quality_input.text()))
+        except ValueError:
+            return 30  # Default WebM quality
+
     def get_threads(self):
         """Get number of threads from input."""
         try:
@@ -140,7 +166,7 @@ class VideoConverterApp(QWidget):
         except ValueError:
             return 4  # Default to 4 threads
 
-    def convert_video(self, file_path, resolution, audio_bitrate, threads):
+    def convert_video(self, file_path, resolution, audio_bitrate, ogg_quality, webm_quality, threads):
         """Convert a single MP4 video to OGG and WebM."""
         filename = os.path.basename(file_path)
         try:
@@ -151,6 +177,8 @@ class VideoConverterApp(QWidget):
                 "ffmpeg", "-y", "-i", file_path,
                 "-c:v", "libtheora",  # Video codec for OGG
                 "-c:a", "libvorbis",  # Audio codec for OGG
+                "-q:v", str(ogg_quality),  # Video quality for OGG
+                "-q:a", "5",          # Audio quality for OGG (fixed at medium)
                 f"-threads", str(threads),
                 ogg_output_file
             ]
@@ -169,7 +197,8 @@ class VideoConverterApp(QWidget):
             ffmpeg_command = [
                 "ffmpeg", "-y", "-i", file_path,
                 "-c:v", "libvpx-vp9",  # Video codec for WebM
-                "-c:a", "libopus",    # Audio codec for WebM
+                "-c:a", "libopus",     # Audio codec for WebM
+                "-crf", str(webm_quality),  # Video quality for WebM
                 f"-threads", str(threads),
                 webm_output_file
             ]
